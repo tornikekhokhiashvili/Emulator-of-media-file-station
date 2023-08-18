@@ -38,4 +38,19 @@ class FileTest {
         val file2 = File(10, "FileName1.avi")
         file + file2
     }
+
+    @Test
+    fun `when summing several files it sizes should be summed`(){
+        val file1 = File(10, "FileName1.mkv")
+        val file2 = File(10, "FileName2.mkv")
+        val file3 = File(10, "FileName3.mkv")
+        val expectedSize = 30
+
+        val newFile = file1 + file2 + file3
+        TestCase.assertEquals(
+                "sum of three files should be 30",
+                newFile.size,
+                expectedSize
+        )
+    }
 }
