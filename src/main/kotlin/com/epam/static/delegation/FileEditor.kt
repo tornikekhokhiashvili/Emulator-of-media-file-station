@@ -13,6 +13,14 @@ class FileEditor(private val storage: FileStorage) : Editor {
      *   with a message: "Your storage is empty"
      */
     override fun edit() {
-        TODO()
+        if (storage.files.isEmpty()) {
+            throw IllegalStateException("Your storage is empty")
+        }
+
+        val editedFileName = "EditedVideo.mkv"
+        val editedFileSize = storage.files.sumBy { it.size }
+
+        val editedFile = File(editedFileSize, editedFileName)
+        println("Edited file is ${editedFile.name}")
     }
 }

@@ -1,5 +1,7 @@
 package com.epam.static.delegation
 
+import java.lang.IllegalArgumentException
+
 /**
  * Represents a file which our [MediaFileProcessor] is operating with
  *
@@ -15,8 +17,17 @@ package com.epam.static.delegation
 class File(val size: Int, val name: String) {
 
     companion object {
-        private const val DOT = "."
+        const val DOT = "."
+        val regex=Regex("VideoFile(\\d)\\.mkv")
+        private const val INVALID_FILE_NAME_MESSAGE = "File name should have `.mkv` extension"
+        private const val INVALID_FILE_SIZE_MESSAGE = "File size should be non-negative"
     }
+
+    init {
+        require(name.endsWith(".mkv")) { INVALID_FILE_NAME_MESSAGE}
+        require(size >= 0) { INVALID_FILE_SIZE_MESSAGE }
+    }
+
 
     /**
      * Emulates editing process of the video files. Creating a new file
@@ -37,6 +48,32 @@ class File(val size: Int, val name: String) {
      * @return new file with a total size and extended name
      */
     operator fun plus(file: File): File {
-        TODO()
+        val thisFileNumber = regex.find(name)?.groupValues?.get(1)?.toInt()
+//            ?: throw IllegalArgumentException("File name should end on a digit")
+        val incomingFileNumber = regex.find(file.name)?.groupValues?.get(1)?.toInt()
+//            ?: throw IllegalArgumentException("File name should end on a digit")
+        val combinedName = "VideoFile$thisFileNumber+$incomingFileNumber.mkv"
+//        require(file.name.last().isDigit()) {"File name should end on a digit"}
+        val totalSize = file.size + this.size
+        return File(totalSize, combinedName)
     }
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is File) return false
+
+        if (size != other.size) return false
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = size
+        result = 31 * result + name.hashCode()
+        return result
+    }
+    override fun toString(): String {
+        return "File(name=$name, size=$size)"
+    }
+
 }
