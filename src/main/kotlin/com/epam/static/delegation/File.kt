@@ -49,11 +49,8 @@ class File(val size: Int, val name: String) {
      */
     operator fun plus(file: File): File {
         val thisFileNumber = regex.find(name)?.groupValues?.get(1)?.toInt()
-//            ?: throw IllegalArgumentException("File name should end on a digit")
         val incomingFileNumber = regex.find(file.name)?.groupValues?.get(1)?.toInt()
-//            ?: throw IllegalArgumentException("File name should end on a digit")
         val combinedName = "VideoFile$thisFileNumber+$incomingFileNumber.mkv"
-//        require(file.name.last().isDigit()) {"File name should end on a digit"}
         val totalSize = file.size + this.size
         return File(totalSize, combinedName)
     }

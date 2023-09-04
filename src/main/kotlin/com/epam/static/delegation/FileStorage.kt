@@ -65,7 +65,7 @@ class FileStorage private constructor(
      * @throws [IllegalArgumentException] when index is invalid
      */
     operator fun minusAssign(index: Int) {
-        if (index<0||index>files.size){
+        if (index<0||index>=files.size){
             throw IllegalArgumentException("Wrong file index $index")
         }
         files.removeAt(index)
@@ -94,12 +94,8 @@ class FileStorage private constructor(
      *   "Your storage is empty"
      */
     operator fun invoke() {
-       if (files.isEmpty()){
-           throw java.lang.IllegalArgumentException("Your storage is empty ")
-       }else{
-           val fileNames = files.joinToString(", ") { it.name }
-           println("$fileNames in your storage")
-       }
+        val message = if (files.isEmpty()) "Your storage is empty" else "${files.joinToString(", "){it.name}} in your storage"
+        println(message)
     }
 
     companion object {
