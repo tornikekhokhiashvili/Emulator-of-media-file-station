@@ -37,10 +37,8 @@ class FileStorage private constructor(
      * @throws [IllegalArgumentException] when restrictions is violated
      */
     operator fun plusAssign(file: File) {
-        if (files.size >= filesLimit ||
-            files.sumOf { it.size } + file.size > sizeLimit ||
-            file.size < 0) {
-            throw IllegalArgumentException("Cannot add file due to restriction violations")
+        require(!(files.size >= filesLimit || files.sumOf { it.size } + file.size > sizeLimit || file.size < 0)) {
+            "Cannot add file due to restriction violations"
         }
         files.add(file)
     }
@@ -66,9 +64,7 @@ class FileStorage private constructor(
      * @throws [IllegalArgumentException] when index is invalid
      */
     operator fun minusAssign(index: Int) {
-        if (index<0||index>=files.size){
-            throw IllegalArgumentException("Wrong file index $index")
-        }
+        require(!(index < 0 || index >= files.size)) { "Wrong file index $index" }
         files.removeAt(index)
     }
 

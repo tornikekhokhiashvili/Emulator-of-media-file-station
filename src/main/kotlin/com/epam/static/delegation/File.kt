@@ -51,9 +51,9 @@ class File(val size: Int, val name: String) {
             val nextNumberSubstring = file.name.substringAfter("File").substringBefore(DOT)
             val currentLastChar = currentNumberSubstring.last()
             val nextLastChar = nextNumberSubstring.last()
-            if (!currentLastChar.isDigit() || !nextLastChar.isDigit()) {
-                throw IllegalArgumentException()
-            }
+        require(!(currentLastChar.isDigit().not() || nextLastChar.isDigit().not())) {
+            "Error: Current and next last characters must both be digits"
+        }
             val newSize = size + file.size
             val currentFileName = name.substringBefore(currentNumberSubstring)
             val newFileName = "$currentFileName${currentNumberSubstring}+${nextNumberSubstring}${DOT}mkv"
