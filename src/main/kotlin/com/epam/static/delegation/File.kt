@@ -18,13 +18,12 @@ class File(val size: Int, val name: String) {
 
     companion object {
         const val DOT = "."
-        val regex=Regex("VideoFile(\\d)\\.mkv")
         private const val INVALID_FILE_NAME_MESSAGE = "File name should have `.mkv` extension"
         private const val INVALID_FILE_SIZE_MESSAGE = "File size should be non-negative"
     }
 
     init {
-        require(name.endsWith(".mkv")) { INVALID_FILE_NAME_MESSAGE}
+        require(name.endsWith(DOT+"mkv")) { INVALID_FILE_NAME_MESSAGE}
         require(size >= 0) { INVALID_FILE_SIZE_MESSAGE }
     }
 
@@ -48,19 +47,23 @@ class File(val size: Int, val name: String) {
      * @return new file with a total size and extended name
      */
     operator fun plus(file: File): File {
-        val thisFileNumber = regex.find(name)?.groupValues?.get(1)?.toInt()
-        val incomingFileNumber = regex.find(file.name)?.groupValues?.get(1)?.toInt()
-        val combinedName = "VideoFile$thisFileNumber+$incomingFileNumber.mkv"
-        val totalSize = file.size + this.size
-        return File(totalSize, combinedName)
+            val currentNumberSubstring = name.substringAfter("File").substringBefore(DOT)
+            val nextNumberSubstring = file.name.substringAfter("File").substringBefore(DOT)
+            val currentLastChar = currentNumberSubstring.last()
+            val nextLastChar = nextNumberSubstring.last()
+            if (!currentLastChar.isDigit() || !nextLastChar.isDigit()) {
+                throw IllegalArgumentException()
+            }
+            val newSize = size + file.size
+            val currentFileName = name.substringBefore(currentNumberSubstring)
+            val newFileName = "$currentFileName${currentNumberSubstring}+${nextNumberSubstring}${DOT}mkv"
+            return File(newSize, newFileName)
     }
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is File) return false
-
         if (size != other.size) return false
         if (name != other.name) return false
-
         return true
     }
 

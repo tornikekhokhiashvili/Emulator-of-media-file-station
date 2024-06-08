@@ -38,10 +38,16 @@ class FileStorage private constructor(
      * @throws [IllegalArgumentException] when restrictions is violated
      */
     operator fun plusAssign(file: File) {
-        if (file.size<=sizeLimit )
-            files.add(file)
-        else
+        if (files.size >= filesLimit) {
             throw IllegalArgumentException("Cannot add file due to restriction violations")
+        }
+        if (files.sumOf { it.size } + file.size > sizeLimit) {
+            throw IllegalArgumentException("Cannot add file due to restriction violations")
+        }
+        if (file.size < 0) {
+            throw IllegalArgumentException("Cannot add file due to restriction violations")
+        }
+        files.add(file)
     }
 
     /**
@@ -109,10 +115,10 @@ class FileStorage private constructor(
          *   should be thrown
          */
         fun create(filesLimit: Int, sizeLimit: Int): FileStorage {
-            if (filesLimit<=0||sizeLimit<=0){
-                throw IllegalArgumentException("Files limit and size limit must be greater than 0")
+            if (filesLimit > 0 && sizeLimit > 0) {
+                return FileStorage(filesLimit, sizeLimit)
             }
-            return FileStorage(filesLimit, sizeLimit)
+            throw IllegalArgumentException()
         }
     }
 }
